@@ -58,8 +58,18 @@ def load_data(data_dir):
     be a list of integer labels, representing the categories for each of the
     corresponding `images`.
     """
-    raise NotImplementedError
-
+    images = []
+    labels = []
+    subdirs = next(os.walk(data_dir + "/"))[1]
+    for sd_name in subdirs:
+        for file in os.listdir(data_dir + "/" + sd_name):
+            image = cv2.imread(data_dir + "/" + sd_name + "/" + file)
+            label = sd_name
+            image = cv2.resize(image, (IMG_WIDTH, IMG_HEIGHT))
+            images.append(image)
+            labels.append(label)
+       
+    return (images, labels)
 
 def get_model():
     """
