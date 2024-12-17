@@ -31,6 +31,11 @@ def main():
     # Get a compiled neural network
     model = get_model()
 
+    # Train neural network
+    model.compile(
+        optimizer="rmsprop", loss="categorical_crossentropy", metrics=["accuracy"]
+    )
+
     # Fit model on training data
     model.fit(x_train, y_train, epochs=EPOCHS)
 
@@ -77,7 +82,26 @@ def get_model():
     `input_shape` of the first layer is `(IMG_WIDTH, IMG_HEIGHT, 3)`.
     The output layer should have `NUM_CATEGORIES` units, one for each category.
     """
-    raise NotImplementedError
+     # Create a neural network
+    model = tf.keras.Sequential([
+        tf.keras.Input(shape=(IMG_WIDTH, IMG_HEIGHT, 3)),
+        # Convolutional layer. Learn 32 filters using a 3x3 kernel
+        tf.keras.layers.Conv2D(
+            32, (3, 3), activation="relu"
+        ),
+        # Max-pooling layer, using 2x2 pool size
+        tf.keras.layers.MaxPooling2D(pool_size=(3, 3)),
+        # Flatten units
+        tf.keras.layers.Flatten(),
+        # Add a hidden layer with dropout
+        tf.keras.layers.Dense(120, activation="relu"), tf.keras.layers.Dropout(0.1),
+        # Add a hidden layer with dropout
+        tf.keras.layers.Dense(120, activation="relu"),
+        # Add an output layer with output units for all 43 signs
+        tf.keras.layers.Dense(43, activation="softmax")
+    ])
+    
+    return model
 
 
 if __name__ == "__main__":
